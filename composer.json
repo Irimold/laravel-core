@@ -1,0 +1,37 @@
+{
+    "name": "irimold/laravel-core",
+    "description": "Irimold Laravel core helpers",
+    "type": "library",
+    "require": {
+        "php": "8.*",
+        "illuminate/console": "^13.9",
+        "illuminate/database": "^13.9",
+        "illuminate/http": "^13.9",
+        "illuminate/support": "^13.9"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Irimold\\LaravelCore\\": "src/"
+        },
+        "files": [
+            "src/Misc/responses.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "LevineLighto",
+            "email": "hello@irimold.web.id"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Irimold\\LaravelCore\\IriServiceProvider"
+            ]
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+use Irimold\LaravelCore\Constants\BaseConstant;
+
+class {{ class }} extends BaseConstant
+{
+    public const VALUES = [];
+}
