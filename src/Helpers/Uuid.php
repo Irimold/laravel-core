@@ -35,11 +35,41 @@ class Uuid
         return implode('-', $segments);
     }
 
+    /**
+     * Convert UUID to Base54 encoded UUID string
+     */
+    public static function encodeBase54(string $uuid)
+    {
+        $uuid = str_replace('-', '', $uuid);
+        return static::baseConvert($uuid, 16, 54);
+    }
+
+    /**
+     * Convert Base54 encoded UUID string to UUID
+     */
+    public static function decodeBase54(string $encoded)
+    {
+        $converted = static::baseConvert($encoded, 54, 16);
+        $converted = str_pad($converted, 32, '0', STR_PAD_LEFT);
+
+        $segments = [
+            substr($converted, 0, 8),
+            substr($converted, 8, 4),
+            substr($converted, 12, 4),
+            substr($converted, 16, 4),
+            substr($converted, 20),
+        ];
+        
+        return implode('-', $segments);
+    }
+
+
+    // Private functions
 
     private static function getTimeHexes()
     {
         $time   = time();
-        $binary = base_convert($time, 10, 2);
+        $binary = static::baseConvert($time, 10, 2);
         $binary = static::trimBinary($binary, static::MAX_TIME_BITS);
 
         $hex = static::binaryToHex($binary, static::MAX_TIME_BITS);
@@ -48,7 +78,7 @@ class Uuid
 
     private static function getCounterHexes(int $counter)
     {
-        $binary = base_convert($counter, 10, 2);
+        $binary = static::baseConvert($counter, 10, 2);
         $binary = static::trimBinary($binary, static::MAX_COUNTER_BITS);
 
         $hex = static::binaryToHex($binary, static::MAX_COUNTER_BITS);
@@ -61,7 +91,7 @@ class Uuid
         $random     = random_bytes($byteSize);
         $hex        = bin2hex($random);
 
-        $binary = base_convert($hex, 16, 2);
+        $binary = static::baseConvert($hex, 16, 2);
         $binary = static::trimBinary($binary, static::MAX_RANDOM_BITS);
         $binary = static::VARIANT . $binary;
 
@@ -82,7 +112,12 @@ class Uuid
     private static function binaryToHex(string $binary, int $bits)
     {
         $length = ceil((float)$bits / 4);
-        $hex = base_convert($binary, 2, 16);
+        $hex = static::baseConvert($binary, 2, 16);
         return str_pad($hex, $length, '0', STR_PAD_LEFT);
+    }
+
+    private static function baseConvert(string $number, int $fromBase, int $toBase)
+    {
+        return gmp_strval(gmp_init($number, $fromBase), $toBase);
     }
 }
